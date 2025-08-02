@@ -1,0 +1,1177 @@
+{
+    "1":{
+        "strategy_name":"ETH_USDC_Automated_Rebalance_Strategy",
+        "execution_frequency":"every_10_minutes",
+        "liquidity_split":{
+            "ETH":50,
+            "USDC":50
+        },
+        "market_conditions":{
+            "current_price":"$1,800",
+            "liquidity_depth":"$1,000,000",
+            "slippage":"0.5%",
+            "fee_earnings":"$5,000"
+        },
+        "technical_indicators":{
+            "RSI":{
+                "period":14,
+                "thresholds":{
+                    "overbought":70,
+                    "oversold":30
+                }
+            },
+            "MACD":{
+                "fast_length":12,
+                "slow_length":26,
+                "signal_length":9
+            },
+            "Bollinger_Bands":{
+                "period":20,
+                "deviation":2
+            },
+            "Moving_Average":{
+                "length":50
+            },
+            "VWAP":{
+                "lookback_period":14
+            },
+            "Order_Flow":{
+                "lookback_period":14
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI < 30",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses above signal line",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price touches lower Bollinger Band",
+                        "action":"add_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price > VWAP",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Order_Flow",
+                        "condition":"Net buy orders > Net sell orders",
+                        "action":"add_liquidity"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI > 70",
+                        "action":"remove_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses below signal line",
+                        "action":"remove_liquidity"
+                    },
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price touches upper Bollinger Band",
+                        "action":"remove_liquidity"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,000",
+                    "liquidity_depth":"$500,000"
+                },
+                "action":"rebalance",
+                "conditions":[
+                    {
+                        "indicator":"Moving_Average",
+                        "condition":"Price crosses below Moving Average",
+                        "action":"adjust_liquidity_range"
+                    }
+                ]
+            },
+            "stop_loss_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"market_price",
+                        "condition":"Price drops 10% below last rebalancing level",
+                        "action":"close_all_positions"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.02,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"10%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "exit_all_positions":true,
+                        "market_order":true,
+                        "slippage_tolerance":0.01
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with put options",
+                "parameters":{
+                    "option_type":"put",
+                    "strike_price":"5% below current ETH price",
+                    "expiry":"30 days",
+                    "premium_budget":"2% of liquidity allocation",
+                    "execution":{
+                        "auto_hedge":true,
+                        "monitor_price":true,
+                        "close_position_on_profit":"if option gains 50% value"
+                    }
+                }
+            }
+        }
+    },
+    "2":{
+        "strategy_name":"ETH_USDC_Balanced_Rebalancing",
+        "execution_frequency":"every_15_minutes",
+        "liquidity_split":{
+            "ETH":50,
+            "USDC":50
+        },
+        "market_conditions":{
+            "current_price":"$1,900",
+            "liquidity_depth":"$750,000",
+            "slippage":"0.3%",
+            "fee_earnings":"$3,500"
+        },
+        "technical_indicators":{
+            "RSI":{
+                "period":14,
+                "thresholds":{
+                    "overbought":70,
+                    "oversold":30
+                }
+            },
+            "MACD":{
+                "fast_length":12,
+                "slow_length":26,
+                "signal_length":9
+            },
+            "VWAP":{
+                "lookback_period":14
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI < 35",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses above signal",
+                        "action":"add_liquidity"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI > 65",
+                        "action":"remove_liquidity"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,000",
+                    "liquidity_depth":"$500,000"
+                },
+                "action":"rebalance",
+                "conditions":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price > VWAP",
+                        "action":"adjust_liquidity_range"
+                    }
+                ]
+            },
+            "stop_loss_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"market_price",
+                        "condition":"Price drops 10% below last rebalancing level",
+                        "action":"close_all_positions"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.02,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"10%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with put options",
+                "parameters":{
+                    "strike_price":"5% below current",
+                    "expiry":"30 days"
+                }
+            }
+        }
+    },
+    "3":{
+        "strategy_name":"ETH_USDC_Volatility_Breakout",
+        "execution_frequency":"every_10_minutes",
+        "liquidity_split":{
+            "ETH":60,
+            "USDC":40
+        },
+        "market_conditions":{
+            "current_price":"$2,000",
+            "liquidity_depth":"$1,200,000",
+            "slippage":"0.4%",
+            "fee_earnings":"$4,000"
+        },
+        "technical_indicators":{
+            "Bollinger_Bands":{
+                "period":20,
+                "deviation":2
+            },
+            "ATR":{
+                "period":14,
+                "multiplier":1.5
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price breaks above upper band",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR > recent average",
+                        "action":"add_liquidity"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price falls below middle band",
+                        "action":"remove_liquidity"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,500",
+                    "liquidity_depth":"$800,000"
+                },
+                "action":"shift_range"
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.03,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"8%",
+                "execution":{
+                    "action":"close_position"
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with put options",
+                "parameters":{
+                    "strike_price":"7% below current"
+                }
+            }
+        }
+    },
+    "4":{
+        "strategy_name":"ETH_USDC_RSI_Trend_Reversal",
+        "execution_frequency":"every_15_minutes",
+        "liquidity_split":{
+            "ETH":50,
+            "USDC":50
+        },
+        "market_conditions":{
+            "current_price":"$1,950",
+            "liquidity_depth":"$1,000,000",
+            "slippage":"0.3%",
+            "fee_earnings":"$3,500"
+        },
+        "technical_indicators":{
+            "RSI":{
+                "period":14,
+                "thresholds":{
+                    "overbought":70,
+                    "oversold":30
+                }
+            },
+            "MACD":{
+                "fast_length":12,
+                "slow_length":26,
+                "signal_length":9
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI < 30",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses above signal line",
+                        "action":"add_liquidity"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI > 70",
+                        "action":"remove_liquidity"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$2,000",
+                    "liquidity_depth":"$900,000"
+                },
+                "action":"rebalance"
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.025,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"10%",
+                "execution":{
+                    "action":"close_position"
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with put options",
+                "parameters":{
+                    "strike_price":"5% below current"
+                }
+            }
+        }
+    },
+    "5":{
+        "strategy_name":"ETH_USDC_Momentum_Breakout",
+        "execution_frequency":"every_10_minutes",
+        "liquidity_split":{
+            "ETH":55,
+            "USDC":45
+        },
+        "market_conditions":{
+            "current_price":"$2,050",
+            "liquidity_depth":"$1,500,000",
+            "slippage":"0.35%",
+            "fee_earnings":"$4,200"
+        },
+        "technical_indicators":{
+            "Moving_Average":{
+                "length":50
+            },
+            "ATR":{
+                "period":14,
+                "multiplier":1.5
+            },
+            "VWAP":{
+                "lookback_period":14
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Moving_Average",
+                        "condition":"Price crosses above 50MA",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR > recent average",
+                        "action":"add_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price above VWAP",
+                        "action":"add_liquidity"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Moving_Average",
+                        "condition":"Price falls below 50MA",
+                        "action":"remove_liquidity"
+                    },
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR < recent average",
+                        "action":"remove_liquidity"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,500",
+                    "liquidity_depth":"$800,000"
+                },
+                "action":"shift_range",
+                "conditions":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price < VWAP",
+                        "action":"adjust_liquidity_range"
+                    }
+                ]
+            },
+            "stop_loss_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"market_price",
+                        "condition":"Price drops 10% below last rebalancing level",
+                        "action":"close_all_positions"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.03,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"8%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with put options",
+                "parameters":{
+                    "option_type":"put",
+                    "strike_price":"7% below current ETH price",
+                    "expiry":"30 days",
+                    "premium_budget":"2% of liquidity allocation",
+                    "execution":{
+                        "auto_hedge":true,
+                        "monitor_price":true,
+                        "close_position_on_profit":"if option gains 50% value"
+                    }
+                }
+            }
+        }
+    },
+    "6":{
+        "strategy_name":"ETH_USDC_ATR_Enhanced_Volatility",
+        "execution_frequency":"every_5_minutes",
+        "liquidity_split":{
+            "ETH":55,
+            "USDC":45
+        },
+        "market_conditions":{
+            "current_price":"$2,100",
+            "liquidity_depth":"$1,000,000",
+            "slippage":"0.32%",
+            "fee_earnings":"$4,800",
+            "volatility_index":"Moderate"
+        },
+        "technical_indicators":{
+            "ATR":{
+                "period":14,
+                "multiplier":1.8
+            },
+            "Parabolic_SAR":{
+                "step":0.02,
+                "max_step":0.2
+            },
+            "Bollinger_Bands":{
+                "period":20,
+                "deviation":2
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR rising above recent average",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"Price breaks above Parabolic SAR",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price moves above upper Bollinger Band",
+                        "action":"increase_liquidity_allocation"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"Price falls below Parabolic SAR",
+                        "action":"remove_liquidity"
+                    },
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price falls below middle Bollinger Band",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,500",
+                    "liquidity_depth":"$750,000"
+                },
+                "action":"adjust_liquidity_range",
+                "conditions":[
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR spikes by 20%",
+                        "action":"expand_liquidity_range"
+                    },
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"SAR reverses direction",
+                        "action":"rebalance"
+                    }
+                ]
+            },
+            "stop_loss_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"market_price",
+                        "condition":"Price drops 12% below last rebalancing level",
+                        "action":"close_all_positions"
+                    },
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR volatility increases by 50%",
+                        "action":"hedge_with_options"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.025,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"10%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"adaptive hedging",
+                "parameters":{
+                    "strike_price":"dynamic (5-8% below current)",
+                    "expiry":"rolling 30-day contracts",
+                    "delta_hedging":true
+                }
+            },
+            "position_sizing":{
+                "dynamic_allocation":true,
+                "max_drawdown":"15%",
+                "volatility_adjusted_sizing":true
+            }
+        }
+    },
+    "7":{
+        "strategy_name":"ETH_USDC_Advanced_RSI_Reversion",
+        "execution_frequency":"every_5_minutes",
+        "liquidity_split":{
+            "ETH":50,
+            "USDC":50
+        },
+        "market_conditions":{
+            "current_price":"$2,020",
+            "liquidity_depth":"$1,200,000",
+            "slippage":"0.3%",
+            "fee_earnings":"$4,500",
+            "volatility_index":"Moderate"
+        },
+        "technical_indicators":{
+            "RSI":{
+                "period":14,
+                "thresholds":{
+                    "overbought":70,
+                    "oversold":30
+                }
+            },
+            "Bollinger_Bands":{
+                "period":20,
+                "deviation":2
+            },
+            "VWAP":{
+                "lookback_period":14
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI < 30",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price touches lower Bollinger Band",
+                        "action":"add_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price > VWAP",
+                        "action":"confirm_trade"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI > 70",
+                        "action":"remove_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price touches upper Bollinger Band",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,000",
+                    "liquidity_depth":"$600,000"
+                },
+                "action":"rebalance",
+                "conditions":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Bollinger Band width expands > 20%",
+                        "action":"adjust_liquidity_range"
+                    }
+                ]
+            },
+            "stop_loss_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"market_price",
+                        "condition":"Price drops 10% below last rebalancing level",
+                        "action":"close_all_positions"
+                    },
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI falls below 20",
+                        "action":"exit_trade_immediately"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.02,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"9%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"adaptive hedging",
+                "parameters":{
+                    "strike_price":"dynamic (5-7% below current)",
+                    "expiry":"rolling 30-day contracts",
+                    "delta_hedging":true
+                }
+            },
+            "position_sizing":{
+                "dynamic_allocation":true,
+                "max_drawdown":"12%",
+                "volatility_adjusted_sizing":true
+            }
+        }
+    },
+    "8":{
+        "strategy_name":"ETH_USDC_Advanced_VWAP_MeanReversion",
+        "execution_frequency":"every_10_minutes",
+        "liquidity_split":{
+            "ETH":50,
+            "USDC":50
+        },
+        "market_conditions":{
+            "current_price":"$1,980",
+            "liquidity_depth":"$850,000",
+            "slippage":"0.28%",
+            "fee_earnings":"$3,900",
+            "volatility_index":"Moderate"
+        },
+        "technical_indicators":{
+            "VWAP":{
+                "lookback_period":14
+            },
+            "Order_Flow":{
+                "lookback_period":10
+            },
+            "Bollinger_Bands":{
+                "period":20,
+                "deviation":2
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price < VWAP",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Order_Flow",
+                        "condition":"Net buy orders > Net sell orders",
+                        "action":"add_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price is within lower Bollinger Band range",
+                        "action":"confirm_trade"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price > VWAP",
+                        "action":"remove_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"Bollinger_Bands",
+                        "condition":"Price is near upper Bollinger Band",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,300",
+                    "liquidity_depth":"$750,000"
+                },
+                "action":"adjust_liquidity_range",
+                "conditions":[
+                    {
+                        "indicator":"Order_Flow",
+                        "condition":"Net sell orders > buy orders for last 3 periods",
+                        "action":"widen_liquidity_range"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.02,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"7%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"adaptive hedging",
+                "parameters":{
+                    "strike_price":"dynamic (5-7% below current)",
+                    "expiry":"rolling 30-day contracts",
+                    "delta_hedging":true
+                }
+            },
+            "position_sizing":{
+                "dynamic_allocation":true,
+                "max_drawdown":"10%",
+                "volatility_adjusted_sizing":true
+            }
+        }
+    },
+    "9":{
+        "strategy_name":"ETH_USDC_Advanced_ATR_Volatility",
+        "execution_frequency":"every_5_minutes",
+        "liquidity_split":{
+            "ETH":55,
+            "USDC":45
+        },
+        "market_conditions":{
+            "current_price":"$2,100",
+            "liquidity_depth":"$1,000,000",
+            "slippage":"0.32%",
+            "fee_earnings":"$4,800",
+            "volatility_index":"High"
+        },
+        "technical_indicators":{
+            "ATR":{
+                "period":14,
+                "multiplier":1.8
+            },
+            "Parabolic_SAR":{
+                "step":0.02,
+                "max_step":0.2
+            },
+            "EMA":{
+                "length":50
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR rising above recent average",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"Price breaks above Parabolic SAR",
+                        "action":"add_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"EMA",
+                        "condition":"Price above 50EMA",
+                        "action":"confirm_trade"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"Price falls below Parabolic SAR",
+                        "action":"remove_liquidity"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"EMA",
+                        "condition":"Price below 50EMA",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,400",
+                    "liquidity_depth":"$700,000"
+                },
+                "action":"shift_range",
+                "conditions":[
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR > 2x recent average",
+                        "action":"expand_liquidity_range"
+                    },
+                    {
+                        "indicator":"Parabolic_SAR",
+                        "condition":"SAR dots flipping frequently",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.035,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"10%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"adaptive hedging",
+                "parameters":{
+                    "strike_price":"dynamic (5-7% below current)",
+                    "expiry":"rolling 30-day contracts",
+                    "delta_hedging":true
+                }
+            },
+            "position_sizing":{
+                "dynamic_allocation":true,
+                "max_drawdown":"12%",
+                "volatility_adjusted_sizing":true
+            }
+        }
+    },
+    "10":{
+        "strategy_name":"ETH_USDC_Smart_Liquidity_V3",
+        "execution_frequency":"every_5_minutes",
+        "liquidity_split":{
+            "ETH":60,
+            "USDC":40
+        },
+        "market_conditions":{
+            "current_price":"$2,150",
+            "liquidity_depth":"$1,500,000",
+            "slippage":"0.25%",
+            "fee_earnings":"$5,200",
+            "volatility_index":"Moderate"
+        },
+        "technical_indicators":{
+            "ATR":{
+                "period":14,
+                "multiplier":1.5
+            },
+            "VWAP":{
+                "lookback_period":20
+            },
+            "RSI":{
+                "period":14,
+                "thresholds":{
+                    "overbought":70,
+                    "oversold":30
+                }
+            },
+            "EMA":{
+                "lengths":[
+                    50,
+                    200
+                ]
+            },
+            "MACD":{
+                "fast_length":12,
+                "slow_length":26,
+                "signal_length":9
+            }
+        },
+        "conditions":{
+            "entry_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI < 35",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price < VWAP",
+                        "action":"add_liquidity"
+                    },
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses above signal line",
+                        "action":"confirm_entry"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"EMA",
+                        "condition":"50EMA above 200EMA",
+                        "action":"increase_exposure"
+                    }
+                ]
+            },
+            "exit_conditions":{
+                "must_meet":[
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI > 65",
+                        "action":"remove_liquidity"
+                    },
+                    {
+                        "indicator":"MACD",
+                        "condition":"MACD line crosses below signal line",
+                        "action":"reduce_exposure"
+                    }
+                ],
+                "optional":[
+                    {
+                        "indicator":"VWAP",
+                        "condition":"Price > VWAP",
+                        "action":"gradual_exit"
+                    }
+                ]
+            },
+            "rebalance_conditions":{
+                "thresholds":{
+                    "fee_earnings":"$1,800",
+                    "liquidity_depth":"$1,200,000"
+                },
+                "action":"adaptive_rebalance",
+                "conditions":[
+                    {
+                        "indicator":"ATR",
+                        "condition":"ATR > 1.5x recent average",
+                        "action":"expand_liquidity_range"
+                    },
+                    {
+                        "indicator":"RSI",
+                        "condition":"RSI enters neutral zone (40-60)",
+                        "action":"reduce_liquidity_exposure"
+                    }
+                ]
+            }
+        },
+        "risk_management":{
+            "max_slippage":0.02,
+            "stop_loss":{
+                "enabled":true,
+                "threshold":"8%",
+                "execution":{
+                    "action":"close_position",
+                    "parameters":{
+                        "market_order":true
+                    }
+                }
+            },
+            "impermanent_loss_protection":{
+                "enabled":true,
+                "strategy":"hedging with rolling put options",
+                "parameters":{
+                    "strike_price":"dynamic (5-8% below current)",
+                    "expiry":"30 days",
+                    "delta_hedging":true
+                }
+            },
+            "position_sizing":{
+                "dynamic_allocation":true,
+                "max_drawdown":"10%",
+                "volatility_adjusted_sizing":true
+            },
+            "liquidity_buffer":{
+                "enabled":true,
+                "allocation":{
+                    "ETH":10,
+                    "USDC":10
+                },
+                "usage_conditions":{
+                    "market_crash":"deploy reserve",
+                    "excess_fees":"compound earnings"
+                }
+            }
+        }
+    },
+    "11":{
+        "strategy_name": "ETH-USDC Rebalancing",
+        "pool": {
+            "token0": "ETH",
+            "token1": "USDC",
+            "fee_tier": 0.05 
+        },
+        "indicators": {
+            "RSI": {
+                "period": 14,
+                "overbought": 70,
+                "oversold": 30
+            },
+            "MACD": {
+                "short_period": 12,
+                "long_period": 26,
+                "signal_period": 9
+            },
+            "Bollinger_Bands": {
+                "period": 20,
+                "deviation": 2
+            },
+            "Moving_Averages": {
+                "short": 50,
+                "long": 200
+            },
+            "VWAP": true
+        },
+        "rebalance_conditions": {
+            "must_meet": [
+                "RSI > 70",
+                "Short_MA crosses above Long_MA"
+            ],
+            "optional": [
+                "MACD above Signal Line",
+                "VWAP trending upwards"
+            ]
+        },
+        "execution": {
+            "action_if_triggered": [
+                "remove_liquidity",
+                "shift_range"
+            ],
+            "new_range_formula": "current_price * (1 ± 0.02)"
+        }
+    }    
+}

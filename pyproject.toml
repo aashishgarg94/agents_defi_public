@@ -1,0 +1,94 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aizen-agents"
+version = "0.1.0"
+description = "Web3 AI Agent Platform with powerful tools and realtime data"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=2.0.0",
+    "web3>=7.6.1",
+    "aiohttp>=3.8.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "playwright>=1.39.0",
+    "lxml>=4.9.0",
+    "eth-account>=0.8.0",
+    "solana>=0.30.0",
+    "base58>=2.1.1",
+    "solders>=0.18.0",
+    "construct>=2.10.68",
+    "openai>=1.59.6",
+    "twikit>=0.2.0",
+    "beautifulsoup4>=4.12.0",
+    "greenlet>=3.0.0",
+    "requests>=2.31.0",
+    "httpx>=0.26.0",
+    "typing-extensions>=4.8.0"
+]
+authors = [
+    {name = "redaicodes", email = "redaicodes@proton.me"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/redaicodes/aizen"
+Repository = "https://github.com/redaicodes/aizen.git"
+#Documentation = "https://yourusername.github.io/aizen"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "mkdocs>=1.6.1",
+    "mkdocstrings>=0.27.0",
+    "mkdocstrings[python]>=0.27.0",
+    "mkdocs-terminal>=4.7.0",
+    "mkdocs-minify-plugin>=0.7.1",
+    "mkdocs-mermaid2-plugin>=1.1.1",
+    "mkdocs-material>=9.5.3",
+    "fontawesome-markdown>=0.2.6"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aizen"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+# Custom scripts to run post-installation
+[tool.hatch.env]
+requires = [
+    "playwright"
+]
+
+[[tool.hatch.envs.default.scripts]]
+playwright-setup = "playwright install"
+chromium-deps = "playwright install-deps chromium"
+post-install = [
+    "playwright-setup",
+    "chromium-deps"
+]
